@@ -72,7 +72,8 @@ class ActorCriticAgent:
         actor_loss = -(log_prob * advantage_tensor)
         
         if self.config.entropy_coef > 0:
-            dist = self.policy.get_action_distribution(state)
+            logits = self.policy(state)
+            dist = torch.distributions.Categorical(logits=logits)
             entropy = dist.entropy()
             actor_loss = actor_loss - self.config.entropy_coef * entropy
         

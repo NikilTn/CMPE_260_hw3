@@ -1,21 +1,21 @@
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/thalapaneninikil/rl_hw3/blob/main/run_project.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nikiltn/rl_hw3/blob/master/run_project.ipynb)
 
 # Policy Gradient Methods - CartPole-v1
 
- Three algorithms: REINFORCE, REINFORCE+Baseline, and Actor-Critic.
+Three simple policy gradient tricks I coded: REINFORCE, REINFORCE+Baseline, and Actor-Critic.
 
 ---
 
-## Quick Start
+## Quick Start (what I run)
 
 ```bash
-# Install
+# Install deps
 pip install -r requirements.txt
 
-# Test
-python test_quick.py
+# (Optional) 
+# python test_quick.py
 
-# Train
+# Train one run
 python train.py --algo reinforce --episodes 500 --seed 42
 python train.py --algo actor_critic --episodes 500 --seed 42
 
@@ -26,23 +26,11 @@ python experiments.py --num_seeds 5 --episodes 800
 ---
 
 
-## Algorithms
+## Algorithms 
 
-### 1. REINFORCE
-- Monte Carlo policy gradient
-- High variance, no bias
-- Updates at episode end
-
-### 2. REINFORCE with Baseline
-- Uses value function as baseline
-- Reduces variance
-- Still unbiased
-
-### 3. Actor-Critic
-- TD learning with bootstrapping
-- Lowest variance
-- Can update each step
-- Some bias
+1) REINFORCE: plain Monte Carlo policy gradient, super simple, high variance.  
+2) REINFORCE + baseline: same thing but subtract V(s) so it shakes less.  
+3) Actor-Critic: TD target with a critic, updates every step, lowest variance but a little bias.
 
 ---
 
@@ -54,7 +42,7 @@ python experiments.py --num_seeds 5 --episodes 800
 python train.py --algo ALGORITHM --episodes NUM --seed SEED
 ```
 
-### Examples
+### Examples I tried
 
 ```bash
 # REINFORCE (no baseline)
@@ -70,7 +58,7 @@ python train.py --algo actor_critic --episodes 600 --seed 42
 python train.py --algo actor_critic --episodes 500 --lr 0.003 --seed 123
 ```
 
-### Options
+### Options (the ones I actually touch)
 
 - `--algo`: Algorithm choice (reinforce, reinforce_baseline, actor_critic)
 - `--episodes`: Number of episodes (default: 1000)
@@ -83,13 +71,13 @@ python train.py --algo actor_critic --episodes 500 --lr 0.003 --seed 123
 
 ## Experiments
 
-### Run Comparison
+### Run Comparison (multi-seed)
 
 ```bash
 python experiments.py --num_seeds 5 --episodes 800
 ```
 
-This runs all 3 algorithms with 5 different seeds and generates:
+This runs all 3 algos with 5 seeds and drops:
 - `results/comparison_all_algorithms.png` - Learning curves
 - `results/sample_efficiency.png` - Sample efficiency
 - `results/comparison_statistics.csv` - Stats summary
@@ -107,78 +95,48 @@ python -c "from experiments import run_gradient_variance_analysis; run_gradient_
 
 ---
 
-## Expected Results
+## Expected Results (rough)
 
-CartPole-v1 learning progression:
-- **0-200 episodes:** Early learning (return ~10-30)
-- **200-500 episodes:** Active learning (return ~30-195)
-- **500-800 episodes:** Solving (return ~195-500)
+- 0-200 eps: learning starts (returns ~10-30)  
+- 200-500 eps: ramp up (returns ~30-195)  
+- 500-800 eps: usually solves (195-500)
 
-**Solved:** Average return ≥ 195 over last 100 episodes
-
-| Algorithm | Episodes to Solve | Final Return |
-|-----------|------------------|--------------|
-| REINFORCE | 300-500 | 450-480 |
-| REINFORCE+Baseline | 250-400 | 460-490 |
-| Actor-Critic | 200-350 | 470-500 |
+Solved = avg return ≥ 195 over last 100 eps.
 
 ---
 
-## How It Works
+## How It Works (short take)
 
-### Policy Gradient
-
-All methods use:
-```
-∇J(θ) = E[∇log π(a|s) × G_t]
-```
-
-Where:
-- `π(a|s)` = policy (action probabilities)
-- `G_t` = return (or advantage)
-
-### Key Differences
-
-**REINFORCE:**
-- Uses full Monte Carlo returns: `G_t = Σ γ^k * r_{t+k}`
-- High variance
-
-**REINFORCE+Baseline:**
-- Uses advantage: `A_t = G_t - V(s_t)`
-- Lower variance
-
-**Actor-Critic:**
-- Uses TD target: `r_t + γ*V(s_{t+1})`
-- Lowest variance, some bias
+All use ∇log π(a|s) * return/advantage.  
+- REINFORCE: full Monte Carlo return → high variance, no bias.  
+- REINFORCE+Baseline: use advantage G - V(s) → same mean, less variance.  
+- Actor-Critic: TD target r + γV(s') → lowest variance, a bit of bias from the critic.
 
 ---
 
-## Hyperparameters
-
-Default values:
+## Hyperparameters (defaults I used)
 
 ```python
-gamma = 0.99              # Discount factor
-policy_lr = 0.001         # Policy learning rate
-value_lr = 0.0005         # Value learning rate
-hidden_layers = [128, 128] # Network size
-entropy_coef = 0.01       # Entropy bonus (Actor-Critic)
+gamma = 0.99
+policy_lr = 0.001
+value_lr = 0.0005
+hidden_layers = [128, 128]
+entropy_coef = 0.01
 ```
 
 ---
 
 ## Google Colab
 
-1. Upload Python files to Colab
-2. Install: `!pip install gymnasium[classic-control] torch matplotlib numpy`
-3. Run training commands
-4. Or use `run_project.ipynb` (Open in Colab badge above)
+1) Upload the files or clone.  
+2) Install: `!pip install gymnasium[classic-control] torch matplotlib numpy`  
+3) Run the commands above or just open `run_project.ipynb` (badge at top).
 
 ---
 
 ## Analysis
 
-For a theoretical comparison of variance, baselines, and bootstrapping (with pointers to the new plots and statistics), see [analysis.md](analysis.md).
+I wrote up the variance/baseline/bootstrapping notes in [analysis.md](analysis.md) with links to the plots.
 
 ---
 
