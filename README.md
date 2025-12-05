@@ -1,4 +1,4 @@
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nikiltn/rl_hw3/blob/master/run_project.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/NikilTn/CMPE_260_hw3/blob/master/run_project.ipynb)
 
 # Policy Gradient Methods - CartPole-v1
 
